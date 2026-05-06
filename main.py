@@ -6,6 +6,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from db.db import init_db
@@ -15,6 +16,8 @@ from rag.embed import get_vector_store
 
 app = FastAPI(title="Flight AI Customer Service Demo")
 INDEX_HTML_PATH = Path(__file__).with_name("index.html")
+STATIC_PATH = Path(__file__).with_name("static")
+app.mount("/static", StaticFiles(directory=STATIC_PATH), name="static")
 
 
 class ChatRequest(BaseModel):

@@ -44,7 +44,10 @@ def startup() -> None:
     """启动时初始化数据库并预热 RAG。"""
 
     init_db()
-    get_vector_store()
+    try:
+        get_vector_store()
+    except Exception as exc:
+        print(f"RAG preload failed: {exc}", flush=True)
 
 
 @app.get(f"{BASE_PATH}/health")

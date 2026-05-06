@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroAI - 航空智能客服系统</title>
+<script src="https://static.mastergo.com/static/ai/resource/html/tailwind/tailwind.js"></script>
+<link href="https://static.mastergo.com/static/ai/resource/html/googleapis/css2?family=Pacifico&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://static.mastergo.com/static/ai/resource/html/font-awesome/css/all.min.css" rel="stylesheet">
+<script src="https://static.mastergo.com/static/ai/resource/html/echarts/5.5.0/echarts.min.js"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                primary: '#1d4ed8',
+                secondary: '#475569',
+                surface: '#f8fafc',
+                border: '#e2e8f0',
+                textmain: '#0f172a'
+            },
+            borderRadius: {
+                'none': '0px',
+                'sm': '2px',
+                DEFAULT: '4px',
+                'md': '8px',
+                'lg': '12px',
+                'xl': '16px',
+                '2xl': '20px',
+                '3xl': '24px',
+                'full': '9999px',
+                'button': '4px'
+            },
+            spacing: {
+                '0': '0px', '1': '4px', '2': '8px', '3': '12px', '4': '16px', '5': '20px', '6': '24px', '8': '32px', '10': '40px', '12': '48px', '16': '64px', '20': '80px', '24': '96px', '32': '128px', '40': '160px', '48': '192px', '64': '256px'
+            },
+            fontSize: {
+                'xs': ['12px', '16px'],
+                'sm': ['14px', '20px'],
+                'base': ['16px', '24px'],
+                'lg': ['18px', '28px'],
+                'xl': ['20px', '28px'],
+                '2xl': ['24px', '32px'],
+                '3xl': ['30px', '36px'],
+                '4xl': ['36px', '44px'],
+                '5xl': ['48px', '56px'],
+                '6xl': ['64px', '76px']
+            }
+        }
+    }
+}
+</script>
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #0f172a;
+    min-height: 1024px;
+    display: flex;
+    flex-direction: column;
+    min-width: 1440px;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+}
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+input {
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+input:focus {
+    border-color: #1d4ed8;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+i.fa, i.fas, i.far, i.fal, i.fab {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+#chat-messages::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+.typing-dot {
+    animation: typingPulse 1s infinite ease-in-out;
+}
+.typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+}
+.typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+}
+@keyframes typingPulse {
+    0%, 80%, 100% { opacity: 0.2; transform: translateY(0); }
+    40% { opacity: 0.8; transform: translateY(-2px); }
+}
+</style>
+</head>
+<body>
+
+<header class="fixed top-[0px] left-[0px] right-[0px] h-[80px] bg-white/90 backdrop-blur-md border-b border-border z-40 flex justify-center">
+    <div class="w-[1440px] px-[80px] flex justify-between items-center h-full">
+        <div class="flex items-center gap-[8px]">
+            <span class="font-['Pacifico'] text-[28px] text-primary">logo</span>
+            <span class="font-bold text-[20px] text-textmain tracking-tight">AeroAI</span>
+        </div>
+        <nav class="flex gap-[40px]">
+            <a href="#" class="text-base font-medium text-textmain hover:text-primary">产品功能</a>
+            <a href="#" class="text-base font-medium text-secondary hover:text-primary">行业解决方案</a>
+            <a href="#" class="text-base font-medium text-secondary hover:text-primary">客户案例</a>
+            <a href="#" class="text-base font-medium text-secondary hover:text-primary">开发者中心</a>
+        </nav>
+        <div class="flex items-center gap-[16px]">
+            <button class="text-base font-medium text-secondary hover:text-primary px-[16px] py-[8px] !rounded-button whitespace-nowrap">登录控制台</button>
+            <button class="bg-primary text-white text-base font-medium px-[24px] py-[12px] !rounded-button whitespace-nowrap hover:bg-blue-800 shadow-sm">免费申请演示</button>
+        </div>
+    </div>
+</header>
+
+<main class="flex flex-col w-full mt-[80px]">
+    <section class="w-full h-[800px] flex justify-center bg-surface relative overflow-hidden" style="background-image: url('https://static.mastergo.com/ai/img_res/1778059968628a1B2c3D4e5F6g7H8i9.jpg'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent w-[800px]"></div>
+        <div class="w-[1440px] px-[80px] flex items-center h-full relative z-10">
+            <div class="w-[640px] flex flex-col gap-[32px]">
+                <div class="flex items-center gap-[8px] bg-blue-50 border border-blue-100 px-[16px] py-[8px] rounded-full w-[fit-content]">
+                    <span class="w-[8px] h-[8px] bg-primary rounded-full"></span>
+                    <span class="text-sm font-medium text-primary">AeroAI 引擎 4.0 全新发布</span>
+                </div>
+                <h1 class="text-6xl font-bold text-textmain tracking-tight">新一代航空级<br><span class="text-primary mt-[12px] block">AI 智能客服引擎</span></h1>
+                <p class="text-xl text-secondary leading-relaxed">为全球航司提供全天候、多语种、高并发的智能化旅客服务解决方案。从机票预订到延误改签，以毫秒级响应重塑飞行体验。</p>
+                <div class="flex gap-[16px] mt-[8px]">
+                    <button class="bg-primary text-white px-[32px] py-[16px] text-base font-medium !rounded-button whitespace-nowrap hover:bg-blue-800 shadow-lg shadow-blue-500/30 flex items-center gap-[8px]">
+                        立即开启体验 <i class="fas fa-arrow-right w-[16px] h-[16px] text-[14px]"></i>
+                    </button>
+                    <button class="bg-white border border-border text-textmain px-[32px] py-[16px] text-base font-medium !rounded-button whitespace-nowrap hover:bg-surface flex items-center gap-[8px]">
+                        <i class="fas fa-play-circle w-[16px] h-[16px] text-[16px] text-primary"></i> 观看产品演示
+                    </button>
+                </div>
+                <div class="flex items-center gap-[24px] mt-[32px] pt-[32px] border-t border-border/50">
+                    <div class="flex flex-col gap-[4px]">
+                        <span class="text-3xl font-bold text-textmain">98.5%</span>
+                        <span class="text-sm text-secondary">意图识别准确率</span>
+                    </div>
+                    <div class="w-[1px] h-[40px] bg-border/50"></div>
+                    <div class="flex flex-col gap-[4px]">
+                        <span class="text-3xl font-bold text-textmain">120+</span>
+                        <span class="text-sm text-secondary">支持全球语种</span>
+                    </div>
+                    <div class="w-[1px] h-[40px] bg-border/50"></div>
+                    <div class="flex flex-col gap-[4px]">
+                        <span class="text-3xl font-bold text-textmain">50ms</span>
+                        <span class="text-sm text-secondary">平均响应延迟</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="w-[1440px] mx-auto px-[80px] py-[128px] flex flex-col items-center">
+        <div class="flex flex-col items-center gap-[16px] mb-[64px] text-center w-[800px]">
+            <h2 class="text-4xl font-bold text-textmain tracking-tight">重塑航司与旅客的连接方式</h2>
+            <p class="text-lg text-secondary">基于航空业专属大模型，深度理解复杂业务场景，提供超越传统客服的卓越体验。</p>
+        </div>
+        <div class="flex flex-wrap gap-[40px] w-[1280px]">
+            <div class="w-[400px] p-[40px] bg-white border border-border rounded-2xl flex flex-col gap-[24px] hover:shadow-xl hover:border-primary/30 transition-all">
+                <div class="w-[56px] h-[56px] bg-blue-50 text-primary rounded-xl flex justify-center items-center">
+                    <i class="fas fa-brain text-[24px] w-[24px] h-[24px]"></i>
+                </div>
+                <div class="flex flex-col gap-[12px]">
+                    <h3 class="text-xl font-bold text-textmain">航空专属 NLU 引擎</h3>
+                    <p class="text-base text-secondary leading-relaxed">深度解析中转联程、舱位等级、行李额度等复杂航空术语，精准洞察旅客真实意图。</p>
+                </div>
+            </div>
+            <div class="w-[400px] p-[40px] bg-white border border-border rounded-2xl flex flex-col gap-[24px] hover:shadow-xl hover:border-primary/30 transition-all">
+                <div class="w-[56px] h-[56px] bg-blue-50 text-primary rounded-xl flex justify-center items-center">
+                    <i class="fas fa-project-diagram text-[24px] w-[24px] h-[24px]"></i>
+                </div>
+                <div class="flex flex-col gap-[12px]">
+                    <h3 class="text-xl font-bold text-textmain">全渠道无缝接入</h3>
+                    <p class="text-base text-secondary leading-relaxed">一次部署，全面覆盖官网、App、微信小程序、WhatsApp 及全球主流社交平台。</p>
+                </div>
+            </div>
+            <div class="w-[400px] p-[40px] bg-white border border-border rounded-2xl flex flex-col gap-[24px] hover:shadow-xl hover:border-primary/30 transition-all">
+                <div class="w-[56px] h-[56px] bg-blue-50 text-primary rounded-xl flex justify-center items-center">
+                    <i class="fas fa-plane-slash text-[24px] w-[24px] h-[24px]"></i>
+                </div>
+                <div class="flex flex-col gap-[12px]">
+                    <h3 class="text-xl font-bold text-textmain">航变自动化处理</h3>
+                    <p class="text-base text-secondary leading-relaxed">面对大面积航班延误或取消，系统自动并发处理海量退改签请求，缓解人工压力。</p>
+                </div>
+            </div>
+            <div class="w-[400px] p-[40px] bg-white border border-border rounded-2xl flex flex-col gap-[24px] hover:shadow-xl hover:border-primary/30 transition-all">
+                <div class="w-[56px] h-[56px] bg-blue-50 text-primary rounded-xl flex justify-center items-center">
+                    <i class="fas fa-globe text-[24px] w-[24px] h-[24px]"></i>
+                </div>
+                <div class="flex flex-col gap-[12px]">
+                    <h3 class="text-xl font-bold text-textmain">全天候多语种支持</h3>
+                    <p class="text-base text-secondary leading-relaxed">打破语言障碍，提供 7x24 小时、超过 120 种语言的实时母语级对话服务。</p>
+                </div>
+            </div>
+            <div class="w-[400px] p-[40px] bg-white border border-border rounded-2xl flex flex-col gap-[24px] hover:shadow-xl hover:border-primary/30 transition-all">
+                <div class="w-[56px] h-[56px] bg-blue-50 text-primary rounded-xl flex justify-center items-center">
+                    <i class="fas fa-crown text-[24px] w-[24px] h-[24px]"></i>
+                </div>
+                <div class="flex flex-col gap-[12px]">
+                    <h3 class="text-xl font-bold text-textmain">高价值旅客识别</h3>
+                    <p class="text-base text-secondary leading-relaxed">智能识别常旅客等级与情绪状态，自动优先接入高级服务通道，提升 VIP 满意度。</p>
+                </div>
+            </div>
+            <div class="w-[400px] p-[40px] bg-white border border-border rounded-2xl flex flex-col gap-[24px] hover:shadow-xl hover:border-primary/30 transition-all">
+                <div class="w-[56px] h-[56px] bg-blue-50 text-primary rounded-xl flex justify-center items-center">
+                    <i class="fas fa-server text-[24px] w-[24px] h-[24px]"></i>
+                </div>
+                <div class="flex flex-col gap-[12px]">
+                    <h3 class="text-xl font-bold text-textmain">核心系统深度直连</h3>
+                    <p class="text-base text-secondary leading-relaxed">预置主流 PSS（如 Amadeus, TravelSky）接口，实现查询、预订、支付全闭环。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="w-full bg-surface py-[128px] flex justify-center">
+        <div class="w-[1440px] px-[80px] flex items-center justify-between">
+            <div class="w-[500px] flex flex-col gap-[32px]">
+                <h2 class="text-4xl font-bold text-textmain tracking-tight">数据驱动，卓越运营</h2>
+                <p class="text-lg text-secondary leading-relaxed">通过实时数据看板，全面掌握客服中心运行状态。AI 不仅解决问题，更通过数据沉淀帮助航司优化航线服务与产品策略。</p>
+                <div class="flex flex-col gap-[24px] mt-[16px]">
+                    <div class="flex items-center gap-[16px]">
+                        <div class="w-[48px] h-[48px] bg-white border border-border rounded-full flex justify-center items-center text-primary">
+                            <i class="fas fa-chart-line text-[20px] w-[20px] h-[20px]"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-lg font-bold text-textmain">人工转接率下降 65%</span>
+                            <span class="text-sm text-secondary">绝大部分常规问询由 AI 独立闭环完成</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-[16px]">
+                        <div class="w-[48px] h-[48px] bg-white border border-border rounded-full flex justify-center items-center text-primary">
+                            <i class="fas fa-smile text-[20px] w-[20px] h-[20px]"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-lg font-bold text-textmain">CSAT 满意度提升至 4.8/5</span>
+                            <span class="text-sm text-secondary">零等待时间的交互体验显著提升旅客评价</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-[16px]">
+                        <div class="w-[48px] h-[48px] bg-white border border-border rounded-full flex justify-center items-center text-primary">
+                            <i class="fas fa-piggy-bank text-[20px] w-[20px] h-[20px]"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-lg font-bold text-textmain">运营成本降低 40%</span>
+                            <span class="text-sm text-secondary">自动化处理大幅减少呼叫中心的席位需求</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-[700px] h-[480px] bg-white border border-border rounded-2xl p-[32px] shadow-sm flex flex-col">
+                <div class="flex justify-between items-center mb-[24px]">
+                    <h3 class="text-xl font-bold text-textmain">智能客服核心指标趋势</h3>
+                    <div class="flex gap-[16px] items-center">
+                        <span class="flex items-center gap-[8px] text-sm text-secondary"><span class="w-[12px] h-[12px] bg-primary rounded-sm"></span> AI 解决率 (%)</span>
+                        <span class="flex items-center gap-[8px] text-sm text-secondary"><span class="w-[12px] h-[12px] bg-blue-200 rounded-sm"></span> 会话量 (万次)</span>
+                    </div>
+                </div>
+                <div id="echarts-container" class="w-full flex-1"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="w-[1440px] mx-auto px-[80px] py-[128px] flex flex-col items-center">
+        <div class="flex flex-col items-center gap-[16px] mb-[64px] text-center w-[800px]">
+            <h2 class="text-4xl font-bold text-textmain tracking-tight">全场景智能化服务覆盖</h2>
+            <p class="text-lg text-secondary">从购票起飞到落地提取行李，AeroAI 始终陪伴在旅客身边，提供专业、贴心的全流程服务。</p>
+        </div>
+        <div class="flex flex-wrap gap-[40px] w-[1280px]">
+            <div class="w-[400px] rounded-2xl overflow-hidden border border-border bg-white flex flex-col hover:shadow-lg transition-shadow">
+                <img src="https://static.mastergo.com/ai/img_res/1778059968628zXcVbNmAsDfGhJkLqW.jpg" alt="预订与退改" class="w-full h-[240px] object-cover object-top">
+                <div class="p-[32px] flex flex-col gap-[16px]">
+                    <h3 class="text-xl font-bold text-textmain">复杂行程预订与退改签</h3>
+                    <p class="text-base text-secondary">支持多目的地、开口程等复杂客票的自然语言查询与预订，并在秒级内完成自动退改签计算与支付流转。</p>
+                </div>
+            </div>
+            <div class="w-[400px] rounded-2xl overflow-hidden border border-border bg-white flex flex-col hover:shadow-lg transition-shadow">
+                <img src="https://static.mastergo.com/ai/img_res/1778059968628pOiUyTrEwQqAsDfGhJ.jpg" alt="行李追踪" class="w-full h-[240px] object-cover object-top">
+                <div class="p-[32px] flex flex-col gap-[16px]">
+                    <h3 class="text-xl font-bold text-textmain">行李追踪与异常申诉</h3>
+                    <p class="text-base text-secondary">对接全球行李追踪系统，旅客只需输入行李牌号，即可实时获取行李位置。支持丢失或破损的一键图像申诉。</p>
+                </div>
+            </div>
+            <div class="w-[400px] rounded-2xl overflow-hidden border border-border bg-white flex flex-col hover:shadow-lg transition-shadow">
+                <img src="https://static.mastergo.com/ai/img_res/1778059968628mNbVcXzLkJhGfDsAqW.jpg" alt="增值服务" class="w-full h-[240px] object-cover object-top">
+                <div class="p-[32px] flex flex-col gap-[16px]">
+                    <h3 class="text-xl font-bold text-textmain">贵宾室与机上服务预订</h3>
+                    <p class="text-base text-secondary">智能推荐选座、额外行李额度购买、机上特殊餐食预订及 VIP 休息室通行证，有效提升航司辅营收入。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="w-full bg-textmain py-[128px] flex justify-center text-white">
+        <div class="w-[1440px] px-[80px] flex flex-col items-center">
+            <div class="flex flex-col items-center gap-[16px] mb-[64px] text-center w-[800px]">
+                <h2 class="text-4xl font-bold tracking-tight">全球化服务网络</h2>
+                <p class="text-lg text-slate-300">依托分布全球的云端节点，无论旅客身在何处，均能享受低延迟的高品质服务。</p>
+            </div>
+            <div class="w-[1280px] h-[480px] rounded-2xl overflow-hidden relative border border-slate-700 bg-slate-800 flex justify-center items-center" style="background-image: url('https://static.mastergo.com/static/ai/resource/gen_page/map_placeholder_1280x720.png'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-textmain/40"></div>
+                <div class="relative z-10 flex flex-col items-center gap-[16px]">
+                    <span class="text-5xl font-bold text-primary">30+</span>
+                    <span class="text-lg text-slate-200">全球数据中心节点</span>
+                </div>
+            </div>
+            <div class="w-[1280px] mt-[80px] pt-[80px] border-t border-slate-700 flex flex-col items-center gap-[40px]">
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-widest">超过 40 家全球领先航司的共同选择</p>
+                <div class="flex justify-between items-center w-full px-[40px] opacity-60">
+                    <span class="text-2xl font-bold font-serif italic">Global Air</span>
+                    <span class="text-2xl font-bold uppercase tracking-tighter">Pacific Airways</span>
+                    <span class="text-2xl font-bold font-sans">HORIZON AVIATION</span>
+                    <span class="text-2xl font-bold tracking-widest">NORDIC FLIGHTS</span>
+                    <span class="text-2xl font-bold font-serif">AeroConnect</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="w-[1440px] mx-auto px-[80px] py-[128px] flex flex-col items-center">
+        <div class="flex flex-col items-center gap-[16px] mb-[64px] text-center w-[800px]">
+            <h2 class="text-4xl font-bold text-textmain tracking-tight">客户评价</h2>
+            <p class="text-lg text-secondary">听听航空业领袖如何评价 AeroAI 带来的业务变革。</p>
+        </div>
+        <div class="flex gap-[40px] w-[1280px]">
+            <div class="w-[620px] p-[48px] bg-surface border border-border rounded-2xl flex flex-col gap-[32px]">
+                <div class="text-primary">
+                    <i class="fas fa-quote-left text-[32px] w-[32px] h-[32px]"></i>
+                </div>
+                <p class="text-xl text-textmain leading-relaxed font-medium">"引入 AeroAI 后，我们在面临极端天气导致的航班大面积延误时，系统自动处理了超过 80% 的改签请求。这不仅大幅降低了客服中心的崩溃风险，更让旅客在焦躁中得到了即时安抚。"</p>
+                <div class="flex items-center gap-[24px] mt-auto">
+                    <img src="https://static.mastergo.com/ai/img_res/1778059968628vBnM1xZ2cC3vB4nM5.jpg" alt="Avatar" class="w-[80px] h-[80px] rounded-full object-cover">
+                    <div class="flex flex-col gap-[4px]">
+                        <span class="text-lg font-bold text-textmain">Alexander Wright</span>
+                        <span class="text-sm text-secondary">Horizon Aviation 客服体验副总裁</span>
+                    </div>
+                </div>
+            </div>
+            <div class="w-[620px] p-[48px] bg-surface border border-border rounded-2xl flex flex-col gap-[32px]">
+                <div class="text-primary">
+                    <i class="fas fa-quote-left text-[32px] w-[32px] h-[32px]"></i>
+                </div>
+                <p class="text-xl text-textmain leading-relaxed font-medium">"多语种支持是我们拓展国际航线的关键。AeroAI 的语言识别极其精准，即使是带有浓重口音的英语或小语种，也能快速理解并准确回复。它就像是我们聘请的一位超级多语种专家。"</p>
+                <div class="flex items-center gap-[24px] mt-auto">
+                    <img src="https://static.mastergo.com/ai/img_res/1778059968628qWeR5tY6uI7oP8aA9.jpg" alt="Avatar" class="w-[80px] h-[80px] rounded-full object-cover">
+                    <div class="flex flex-col gap-[4px]">
+                        <span class="text-lg font-bold text-textmain">Sarah Chen</span>
+                        <span class="text-sm text-secondary">Pacific Airways 数字化运营总监</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="w-full bg-surface pt-[128px] pb-[40px] flex flex-col items-center border-t border-border">
+    <div class="w-[1280px] bg-primary rounded-3xl p-[80px] flex flex-col items-center text-center text-white mb-[80px] relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZyI+PGNpcmNsZSBjeD0iMiIgYz0iMiIgcj0iMiIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1vcGFjaXR5PSIwLjEiLz48L3N2Zz4=')] opacity-50"></div>
+        <div class="relative z-10 flex flex-col items-center">
+            <h2 class="text-4xl font-bold mb-[24px]">准备好提升您的旅客满意度了吗？</h2>
+            <p class="text-xl text-blue-100 mb-[48px] w-[600px]">立即预约专属产品演示，了解 AeroAI 如何为您的航司量身定制智能化服务解决方案。</p>
+            <div class="flex gap-[16px] w-[500px]">
+                <div class="relative flex-1">
+                    <i class="fas fa-envelope absolute left-[16px] top-[16px] text-secondary w-[20px] h-[20px] text-[16px]"></i>
+                    <input type="email" placeholder="输入您的工作邮箱" class="w-full pl-[48px] pr-[16px] py-[16px] text-base text-textmain rounded-md border-none h-[56px] focus:ring-2 focus:ring-blue-300 outline-none">
+                </div>
+                <button class="bg-textmain text-white px-[32px] py-[16px] text-base font-bold !rounded-button whitespace-nowrap hover:bg-slate-800 h-[56px]">获取方案</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-[1280px] flex justify-between mb-[80px]">
+        <div class="flex flex-col gap-[24px] w-[320px]">
+            <div class="flex items-center gap-[8px]">
+                <span class="font-['Pacifico'] text-[28px] text-primary">logo</span>
+                <span class="font-bold text-[20px] text-textmain tracking-tight">AeroAI</span>
+            </div>
+            <p class="text-sm text-secondary leading-relaxed">致力于通过人工智能技术，为全球航空业提供高效、智能、有温度的客服解决方案，让每一次飞行都更美好。</p>
+            <div class="flex gap-[16px] mt-[8px]">
+                <a href="#" class="w-[40px] h-[40px] bg-white border border-border rounded-full flex justify-center items-center text-secondary hover:text-primary hover:border-primary transition-colors"><i class="fab fa-twitter text-[16px] w-[16px] h-[16px]"></i></a>
+                <a href="#" class="w-[40px] h-[40px] bg-white border border-border rounded-full flex justify-center items-center text-secondary hover:text-primary hover:border-primary transition-colors"><i class="fab fa-linkedin-in text-[16px] w-[16px] h-[16px]"></i></a>
+                <a href="#" class="w-[40px] h-[40px] bg-white border border-border rounded-full flex justify-center items-center text-secondary hover:text-primary hover:border-primary transition-colors"><i class="fab fa-weixin text-[16px] w-[16px] h-[16px]"></i></a>
+            </div>
+        </div>
+        <div class="flex gap-[80px]">
+            <div class="flex flex-col gap-[24px]">
+                <h4 class="text-base font-bold text-textmain">产品与服务</h4>
+                <div class="flex flex-col gap-[16px]">
+                    <a href="#" class="text-sm text-secondary hover:text-primary">智能对话机器人</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">全渠道客服工作台</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">航变自动化系统</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">数据分析看板</a>
+                </div>
+            </div>
+            <div class="flex flex-col gap-[24px]">
+                <h4 class="text-base font-bold text-textmain">解决方案</h4>
+                <div class="flex flex-col gap-[16px]">
+                    <a href="#" class="text-sm text-secondary hover:text-primary">全服务航司 (FSC)</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">低成本航司 (LCC)</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">在线旅游平台 (OTA)</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">机场服务中心</a>
+                </div>
+            </div>
+            <div class="flex flex-col gap-[24px]">
+                <h4 class="text-base font-bold text-textmain">资源中心</h4>
+                <div class="flex flex-col gap-[16px]">
+                    <a href="#" class="text-sm text-secondary hover:text-primary">开发者文档</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">API 接口说明</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">行业白皮书</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">系统状态</a>
+                </div>
+            </div>
+            <div class="flex flex-col gap-[24px]">
+                <h4 class="text-base font-bold text-textmain">关于我们</h4>
+                <div class="flex flex-col gap-[16px]">
+                    <a href="#" class="text-sm text-secondary hover:text-primary">公司介绍</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">加入我们</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">联系销售</a>
+                    <a href="#" class="text-sm text-secondary hover:text-primary">隐私政策</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-[1280px] pt-[32px] border-t border-border flex justify-between items-center">
+        <p class="text-sm text-secondary">© 2024 AeroAI Technologies Co., Ltd. 保留所有权利。</p>
+        <div class="flex items-center gap-[24px]">
+            <a href="#" class="text-sm text-secondary hover:text-primary">服务条款</a>
+            <a href="#" class="text-sm text-secondary hover:text-primary">Cookie 政策</a>
+            <div class="flex items-center gap-[8px] text-sm text-secondary cursor-pointer hover:text-primary">
+                <i class="fas fa-globe w-[16px] h-[16px]"></i> 简体中文
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div id="chat-widget" class="fixed bottom-[40px] right-[40px] z-50 flex flex-col items-end">
+    <button id="chat-toggle-btn" class="w-[64px] h-[64px] bg-primary rounded-full shadow-2xl flex justify-center items-center text-white hover:bg-blue-800 transition-transform hover:scale-105 hidden">
+        <i class="fas fa-comment-dots text-[28px] w-[28px] h-[28px]"></i>
+    </button>
+
+    <div id="chat-window" class="w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden transition-all duration-300 transform origin-bottom-right">
+        <div class="h-[72px] bg-primary px-[20px] flex justify-between items-center text-white shrink-0">
+            <div class="flex items-center gap-[12px]">
+                <div class="relative">
+                    <div class="w-[40px] h-[40px] bg-white/20 rounded-full flex justify-center items-center">
+                        <i class="fas fa-robot text-[20px] w-[20px] h-[20px]"></i>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-[12px] h-[12px] bg-green-400 border-2 border-primary rounded-full"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-base">AeroAI 助理</span>
+                    <span class="text-xs text-blue-100">7x24 小时为您服务</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-[8px]">
+                <button class="w-[32px] h-[32px] rounded-full hover:bg-white/20 flex justify-center items-center text-white transition-colors" type="button">
+                    <i class="fas fa-ellipsis-h w-[16px] h-[16px]"></i>
+                </button>
+                <button id="chat-close-btn" class="w-[32px] h-[32px] rounded-full hover:bg-white/20 flex justify-center items-center text-white transition-colors" type="button">
+                    <i class="fas fa-chevron-down w-[16px] h-[16px]"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="chat-messages" class="flex-1 bg-surface p-[20px] overflow-y-auto flex flex-col gap-[20px]">
+            <div class="text-center">
+                <span id="chat-time" class="text-xs text-secondary bg-border/50 px-[12px] py-[4px] rounded-full">今天</span>
+            </div>
+            <div class="flex gap-[12px]">
+                <div class="w-[32px] h-[32px] bg-blue-100 rounded-full flex justify-center items-center text-primary shrink-0 mt-[4px]">
+                    <i class="fas fa-robot text-[14px] w-[14px] h-[14px]"></i>
+                </div>
+                <div class="bg-white border border-border p-[16px] rounded-2xl rounded-tl-none shadow-sm flex flex-col gap-[8px] max-w-[280px]">
+                    <p class="text-sm text-textmain leading-relaxed">您好！我是 AeroAI 智能助理，请问有什么可以帮您？您可以直接对我说：</p>
+                    <div class="flex flex-col gap-[8px] mt-[4px]">
+                        <button class="quick-question text-xs text-primary bg-blue-50 hover:bg-blue-100 px-[12px] py-[8px] rounded-lg text-left transition-colors" type="button" data-text="查询北京到伦敦的航班">查询北京到伦敦的航班</button>
+                        <button class="quick-question text-xs text-primary bg-blue-50 hover:bg-blue-100 px-[12px] py-[8px] rounded-lg text-left transition-colors" type="button" data-text="如何办理行李托运？">如何办理行李托运？</button>
+                        <button class="quick-question text-xs text-primary bg-blue-50 hover:bg-blue-100 px-[12px] py-[8px] rounded-lg text-left transition-colors" type="button" data-text="我的航班延误了怎么办">我的航班延误了怎么办</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="chat-form" class="h-[80px] bg-white border-t border-border p-[16px] flex items-center gap-[12px] shrink-0">
+            <button class="w-[32px] h-[32px] text-secondary hover:text-primary flex justify-center items-center shrink-0 transition-colors" type="button">
+                <i class="fas fa-plus-circle text-[20px] w-[20px] h-[20px]"></i>
+            </button>
+            <input id="chat-input" type="text" placeholder="输入您的问题..." class="flex-1 bg-surface border-none h-[40px] px-[16px] rounded-full text-sm focus:ring-1 focus:ring-primary outline-none">
+            <button id="chat-send" class="w-[40px] h-[40px] bg-primary text-white rounded-full flex justify-center items-center hover:bg-blue-800 shrink-0 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed" type="submit">
+                <i class="fas fa-paper-plane text-[16px] w-[16px] h-[16px] -ml-[2px]"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var chartDom = document.getElementById('echarts-container');
+    if (chartDom && window.echarts) {
+        var myChart = echarts.init(chartDom);
+        var option = {
+            animation: false,
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'cross', crossStyle: { color: '#999' } }
+            },
+            grid: { left: '3%', right: '3%', bottom: '5%', top: '15%', containLabel: true },
+            xAxis: [{
+                type: 'category',
+                data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                axisPointer: { type: 'shadow' },
+                axisLine: { lineStyle: { color: '#e2e8f0' } },
+                axisLabel: { color: '#475569' }
+            }],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '会话量(万)',
+                    min: 0,
+                    max: 250,
+                    interval: 50,
+                    nameTextStyle: { color: '#475569' },
+                    axisLabel: { color: '#475569' },
+                    splitLine: { lineStyle: { color: '#f1f5f9', type: 'dashed' } }
+                },
+                {
+                    type: 'value',
+                    name: '解决率(%)',
+                    min: 70,
+                    max: 100,
+                    interval: 10,
+                    nameTextStyle: { color: '#475569' },
+                    axisLabel: { formatter: '{value} %', color: '#475569' },
+                    splitLine: { show: false }
+                }
+            ],
+            series: [
+                {
+                    name: '会话量(万次)',
+                    type: 'bar',
+                    itemStyle: { color: '#bfdbfe', borderRadius: [4, 4, 0, 0] },
+                    barWidth: '40%',
+                    data: [120, 132, 145, 138, 150, 180, 210, 220, 190, 175, 160, 195]
+                },
+                {
+                    name: 'AI 解决率(%)',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    itemStyle: { color: '#1d4ed8' },
+                    lineStyle: { width: 3 },
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    data: [78, 82, 85, 87, 88, 92, 94, 95, 96, 97, 98, 98.5]
+                }
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    var chatWindow = document.getElementById('chat-window');
+    var chatToggleBtn = document.getElementById('chat-toggle-btn');
+    var chatCloseBtn = document.getElementById('chat-close-btn');
+    var chatMessages = document.getElementById('chat-messages');
+    var chatForm = document.getElementById('chat-form');
+    var chatInput = document.getElementById('chat-input');
+    var chatSend = document.getElementById('chat-send');
+    var chatTime = document.getElementById('chat-time');
+    var sessionId = 'web-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+
+    chatTime.textContent = '今天 ' + new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+
+    chatCloseBtn.addEventListener('click', function() {
+        chatWindow.classList.add('hidden');
+        chatToggleBtn.classList.remove('hidden');
+    });
+
+    chatToggleBtn.addEventListener('click', function() {
+        chatToggleBtn.classList.add('hidden');
+        chatWindow.classList.remove('hidden');
+        chatInput.focus();
+    });
+
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addMessage(role, text) {
+        var row = document.createElement('div');
+        var avatar = document.createElement('div');
+        var icon = document.createElement('i');
+        var bubble = document.createElement('div');
+        var content = document.createElement('p');
+
+        if (role === 'user') {
+            row.className = 'flex gap-[12px] flex-row-reverse';
+            avatar.className = 'w-[32px] h-[32px] bg-slate-200 rounded-full flex justify-center items-center text-secondary shrink-0 mt-[4px]';
+            icon.className = 'fas fa-user text-[14px] w-[14px] h-[14px]';
+            bubble.className = 'bg-primary p-[16px] rounded-2xl rounded-tr-none shadow-sm max-w-[280px]';
+            content.className = 'text-sm text-white leading-relaxed whitespace-pre-wrap';
+        } else {
+            row.className = 'flex gap-[12px]';
+            avatar.className = 'w-[32px] h-[32px] bg-blue-100 rounded-full flex justify-center items-center text-primary shrink-0 mt-[4px]';
+            icon.className = 'fas fa-robot text-[14px] w-[14px] h-[14px]';
+            bubble.className = 'bg-white border border-border p-[16px] rounded-2xl rounded-tl-none shadow-sm max-w-[280px]';
+            content.className = 'text-sm text-textmain leading-relaxed whitespace-pre-wrap';
+        }
+
+        content.textContent = text || '';
+        avatar.appendChild(icon);
+        bubble.appendChild(content);
+        row.appendChild(avatar);
+        row.appendChild(bubble);
+        chatMessages.appendChild(row);
+        scrollToBottom();
+        return content;
+    }
+
+    function addTypingMessage() {
+        var row = document.createElement('div');
+        row.className = 'flex gap-[12px] items-center';
+        row.innerHTML = '<div class="w-[32px] h-[32px] bg-blue-100 rounded-full flex justify-center items-center text-primary shrink-0"><i class="fas fa-robot text-[14px] w-[14px] h-[14px]"></i></div><div class="bg-white border border-border px-[16px] py-[12px] rounded-2xl rounded-tl-none shadow-sm flex gap-[4px] items-center h-[36px]"><span class="typing-dot w-[6px] h-[6px] bg-secondary rounded-full"></span><span class="typing-dot w-[6px] h-[6px] bg-secondary rounded-full"></span><span class="typing-dot w-[6px] h-[6px] bg-secondary rounded-full"></span></div>';
+        chatMessages.appendChild(row);
+        scrollToBottom();
+        return row;
+    }
+
+    async function sendMessage(rawText) {
+        var message = rawText.trim();
+        if (!message || chatSend.disabled) return;
+
+        addMessage('user', message);
+        chatInput.value = '';
+        chatSend.disabled = true;
+        chatInput.disabled = true;
+        var typingRow = addTypingMessage();
+        var botContent = null;
+
+        try {
+            var res = await fetch('/chat/stream', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId, message: message })
+            });
+
+            if (!res.ok || !res.body) {
+                throw new Error('请求失败');
+            }
+
+            var reader = res.body.getReader();
+            var decoder = new TextDecoder('utf-8');
+            var buffer = '';
+
+            while (true) {
+                var result = await reader.read();
+                if (result.done) break;
+                buffer += decoder.decode(result.value, { stream: true });
+                var events = buffer.split('\n\n');
+                buffer = events.pop() || '';
+
+                for (var i = 0; i < events.length; i += 1) {
+                    var event = events[i];
+                    if (!event.startsWith('data: ')) continue;
+                    var data = JSON.parse(event.slice(6));
+
+                    if (data.type === 'delta') {
+                        if (!botContent) {
+                            typingRow.remove();
+                            botContent = addMessage('bot', '');
+                        }
+                        botContent.textContent += data.content;
+                        scrollToBottom();
+                    }
+
+                    if (data.type === 'error') {
+                        throw new Error(data.message || '请求失败');
+                    }
+                }
+            }
+
+            if (!botContent) {
+                typingRow.remove();
+                addMessage('bot', '已收到。');
+            }
+        } catch (err) {
+            if (typingRow.isConnected) typingRow.remove();
+            addMessage('bot', '请求失败：' + err.message);
+        } finally {
+            chatSend.disabled = false;
+            chatInput.disabled = false;
+            chatInput.focus();
+        }
+    }
+
+    chatForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        sendMessage(chatInput.value);
+    });
+
+    chatInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage(chatInput.value);
+        }
+    });
+
+    document.querySelectorAll('.quick-question').forEach(function(button) {
+        button.addEventListener('click', function() {
+            sendMessage(button.dataset.text || button.textContent);
+        });
+    });
+});
+</script>
+</body>
+</html>

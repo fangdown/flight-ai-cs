@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Any
 
@@ -7,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 
 
 FAQ_PATH = Path(__file__).resolve().parent / "faq.txt"
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+DEFAULT_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
 
 def load_faq(path: Path = FAQ_PATH) -> str:
@@ -38,7 +39,8 @@ class FAQVectorStore:
     def __init__(self) -> None:
         """加载模型并构建索引。"""
 
-        self.model = SentenceTransformer(MODEL_NAME)
+        model_name = os.getenv("EMBEDDING_MODEL_PATH", DEFAULT_MODEL_NAME)
+        self.model = SentenceTransformer(model_name)
         self.docs = split_faq(load_faq())
         embeddings = self.model.encode(
             [doc["content"] for doc in self.docs],

@@ -68,6 +68,8 @@ cp .env.example .env
 DEEPSEEK_API_KEY=your_deepseek_key
 DEEPSEEK_MODEL=deepseek-chat
 DEEPSEEK_BASE_URL=https://api.deepseek.com
+EMBEDDING_MODEL_PATH=/models/all-MiniLM-L6-v2
+EMBEDDING_MODEL_DIR=/path/to/server/models
 ```
 
 启动：
@@ -249,4 +251,5 @@ python3 -m compileall main.py llm rag tools db
 - 未配置 `DEEPSEEK_API_KEY`：系统只使用本地兜底能力。
 - 修改代码后页面没变化：使用 `uvicorn main:app --reload --port 8100`，或重启服务。
 - Docker 中 key 不生效：确认 `.env` 位于 `docker-compose.yml` 同级目录。
+- 服务器已有 embedding 模型：设置 `EMBEDDING_MODEL_DIR` 为宿主机模型目录，`EMBEDDING_MODEL_PATH` 为容器内模型路径。
 - 首次 RAG 查询较慢：`sentence-transformers` 模型需要首次下载和加载。

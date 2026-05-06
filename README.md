@@ -73,13 +73,13 @@ DEEPSEEK_BASE_URL=https://api.deepseek.com
 启动：
 
 ```bash
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8100
 ```
 
 访问：
 
 ```text
-http://127.0.0.1:8000
+http://127.0.0.1:8100
 ```
 
 ## Docker
@@ -93,7 +93,7 @@ docker compose up --build
 访问：
 
 ```text
-http://127.0.0.1:8000
+http://127.0.0.1:8100
 ```
 
 ## API Reference
@@ -107,7 +107,7 @@ http://127.0.0.1:8000
 健康检查。
 
 ```bash
-curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8100/health
 ```
 
 响应：
@@ -121,7 +121,7 @@ curl http://127.0.0.1:8000/health
 普通聊天接口。
 
 ```bash
-curl -X POST http://127.0.0.1:8000/chat \
+curl -X POST http://127.0.0.1:8100/chat \
   -H "Content-Type: application/json" \
   -d '{"session_id":"s1","message":"查订单123"}'
 ```
@@ -185,7 +185,7 @@ curl -X POST http://127.0.0.1:8000/chat \
 SSE 流式聊天接口，前端页面使用该接口。
 
 ```bash
-curl -N -X POST http://127.0.0.1:8000/chat/stream \
+curl -N -X POST http://127.0.0.1:8100/chat/stream \
   -H "Content-Type: application/json" \
   -d '{"session_id":"s1","message":"退票规则"}'
 ```
@@ -247,6 +247,6 @@ python3 -m compileall main.py llm rag tools db
 ## Troubleshooting
 
 - 未配置 `DEEPSEEK_API_KEY`：系统只使用本地兜底能力。
-- 修改代码后页面没变化：使用 `uvicorn main:app --reload`，或重启服务。
+- 修改代码后页面没变化：使用 `uvicorn main:app --reload --port 8100`，或重启服务。
 - Docker 中 key 不生效：确认 `.env` 位于 `docker-compose.yml` 同级目录。
 - 首次 RAG 查询较慢：`sentence-transformers` 模型需要首次下载和加载。

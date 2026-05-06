@@ -2,7 +2,7 @@ services:
   flight-ai-cs:
     build: .
     ports:
-      - "8000:8000"
+      - "8100:8100"
     environment:
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
       DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}

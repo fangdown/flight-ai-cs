@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AeroAI - 航空智能客服系统</title>
-<script src="/static/vendor/tailwind/tailwind.js"></script>
-<link href="/static/vendor/fonts/fonts.css" rel="stylesheet">
-<link href="/static/vendor/font-awesome/css/all.min.css" rel="stylesheet">
-<script src="/static/vendor/echarts/echarts.min.js"></script>
+<script src="/flight-cs/static/vendor/tailwind/tailwind.js"></script>
+<link href="/flight-cs/static/vendor/fonts/fonts.css" rel="stylesheet">
+<link href="/flight-cs/static/vendor/font-awesome/css/all.min.css" rel="stylesheet">
+<script src="/flight-cs/static/vendor/echarts/echarts.min.js"></script>
 <script>
 tailwind.config = {
     theme: {
@@ -139,7 +139,7 @@ i.fa, i.fas, i.far, i.fal, i.fab {
 </header>
 
 <main class="flex flex-col w-full mt-[80px]">
-    <section class="w-full h-[800px] flex justify-center bg-surface relative overflow-hidden" style="background-image: url('https://static.mastergo.com/ai/img_res/1778059968628a1B2c3D4e5F6g7H8i9.jpg'); background-size: cover; background-position: center;">
+    <section class="w-full h-[800px] flex justify-center bg-surface relative overflow-hidden" style="background-image: url('/flight-cs/static/images/map-placeholder.png'); background-size: cover; background-position: center;">
         <div class="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent w-[800px]"></div>
         <div class="w-[1440px] px-[80px] flex items-center h-full relative z-10">
             <div class="w-[640px] flex flex-col gap-[32px]">
@@ -295,21 +295,21 @@ i.fa, i.fas, i.far, i.fal, i.fab {
         </div>
         <div class="flex flex-wrap gap-[40px] w-[1280px]">
             <div class="w-[400px] rounded-2xl overflow-hidden border border-border bg-white flex flex-col hover:shadow-lg transition-shadow">
-                <img src="https://static.mastergo.com/ai/img_res/1778059968628zXcVbNmAsDfGhJkLqW.jpg" alt="预订与退改" class="w-full h-[240px] object-cover object-top">
+                <img src="/flight-cs/static/images/map-placeholder.png" alt="预订与退改" class="w-full h-[240px] object-cover object-top">
                 <div class="p-[32px] flex flex-col gap-[16px]">
                     <h3 class="text-xl font-bold text-textmain">复杂行程预订与退改签</h3>
                     <p class="text-base text-secondary">支持多目的地、开口程等复杂客票的自然语言查询与预订，并在秒级内完成自动退改签计算与支付流转。</p>
                 </div>
             </div>
             <div class="w-[400px] rounded-2xl overflow-hidden border border-border bg-white flex flex-col hover:shadow-lg transition-shadow">
-                <img src="https://static.mastergo.com/ai/img_res/1778059968628pOiUyTrEwQqAsDfGhJ.jpg" alt="行李追踪" class="w-full h-[240px] object-cover object-top">
+                <img src="/flight-cs/static/images/map-placeholder.png" alt="行李追踪" class="w-full h-[240px] object-cover object-top">
                 <div class="p-[32px] flex flex-col gap-[16px]">
                     <h3 class="text-xl font-bold text-textmain">行李追踪与异常申诉</h3>
                     <p class="text-base text-secondary">对接全球行李追踪系统，旅客只需输入行李牌号，即可实时获取行李位置。支持丢失或破损的一键图像申诉。</p>
                 </div>
             </div>
             <div class="w-[400px] rounded-2xl overflow-hidden border border-border bg-white flex flex-col hover:shadow-lg transition-shadow">
-                <img src="https://static.mastergo.com/ai/img_res/1778059968628mNbVcXzLkJhGfDsAqW.jpg" alt="增值服务" class="w-full h-[240px] object-cover object-top">
+                <img src="/flight-cs/static/images/map-placeholder.png" alt="增值服务" class="w-full h-[240px] object-cover object-top">
                 <div class="p-[32px] flex flex-col gap-[16px]">
                     <h3 class="text-xl font-bold text-textmain">贵宾室与机上服务预订</h3>
                     <p class="text-base text-secondary">智能推荐选座、额外行李额度购买、机上特殊餐食预订及 VIP 休息室通行证，有效提升航司辅营收入。</p>
@@ -324,7 +324,7 @@ i.fa, i.fas, i.far, i.fal, i.fab {
                 <h2 class="text-4xl font-bold tracking-tight">全球化服务网络</h2>
                 <p class="text-lg text-slate-300">依托分布全球的云端节点，无论旅客身在何处，均能享受低延迟的高品质服务。</p>
             </div>
-            <div class="w-[1280px] h-[480px] rounded-2xl overflow-hidden relative border border-slate-700 bg-slate-800 flex justify-center items-center" style="background-image: url('https://static.mastergo.com/static/ai/resource/gen_page/map_placeholder_1280x720.png'); background-size: cover; background-position: center;">
+            <div class="w-[1280px] h-[480px] rounded-2xl overflow-hidden relative border border-slate-700 bg-slate-800 flex justify-center items-center" style="background-image: url('/flight-cs/static/images/map-placeholder.png'); background-size: cover; background-position: center;">
                 <div class="absolute inset-0 bg-textmain/40"></div>
                 <div class="relative z-10 flex flex-col items-center gap-[16px]">
                     <span class="text-5xl font-bold text-primary">30+</span>
@@ -356,7 +356,7 @@ i.fa, i.fas, i.far, i.fal, i.fab {
                 </div>
                 <p class="text-xl text-textmain leading-relaxed font-medium">"引入 AeroAI 后，我们在面临极端天气导致的航班大面积延误时，系统自动处理了超过 80% 的改签请求。这不仅大幅降低了客服中心的崩溃风险，更让旅客在焦躁中得到了即时安抚。"</p>
                 <div class="flex items-center gap-[24px] mt-auto">
-                    <img src="https://static.mastergo.com/ai/img_res/1778059968628vBnM1xZ2cC3vB4nM5.jpg" alt="Avatar" class="w-[80px] h-[80px] rounded-full object-cover">
+                    <img src="/flight-cs/static/images/map-placeholder.png" alt="Avatar" class="w-[80px] h-[80px] rounded-full object-cover">
                     <div class="flex flex-col gap-[4px]">
                         <span class="text-lg font-bold text-textmain">Alexander Wright</span>
                         <span class="text-sm text-secondary">Horizon Aviation 客服体验副总裁</span>
@@ -369,7 +369,7 @@ i.fa, i.fas, i.far, i.fal, i.fab {
                 </div>
                 <p class="text-xl text-textmain leading-relaxed font-medium">"多语种支持是我们拓展国际航线的关键。AeroAI 的语言识别极其精准，即使是带有浓重口音的英语或小语种，也能快速理解并准确回复。它就像是我们聘请的一位超级多语种专家。"</p>
                 <div class="flex items-center gap-[24px] mt-auto">
-                    <img src="https://static.mastergo.com/ai/img_res/1778059968628qWeR5tY6uI7oP8aA9.jpg" alt="Avatar" class="w-[80px] h-[80px] rounded-full object-cover">
+                    <img src="/flight-cs/static/images/map-placeholder.png" alt="Avatar" class="w-[80px] h-[80px] rounded-full object-cover">
                     <div class="flex flex-col gap-[4px]">
                         <span class="text-lg font-bold text-textmain">Sarah Chen</span>
                         <span class="text-sm text-secondary">Pacific Airways 数字化运营总监</span>
@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var botContent = null;
 
         try {
-            var res = await fetch('/chat/stream', {
+            var res = await fetch('/flight-cs/chat/stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ session_id: sessionId, message: message })

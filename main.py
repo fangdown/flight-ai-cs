@@ -15,9 +15,10 @@ from rag.embed import get_vector_store
 
 
 app = FastAPI(title="Flight AI Customer Service Demo")
+BASE_PATH = "/flight-cs"
 INDEX_HTML_PATH = Path(__file__).with_name("index.html")
 STATIC_PATH = Path(__file__).with_name("static")
-app.mount("/static", StaticFiles(directory=STATIC_PATH), name="static")
+app.mount(f"{BASE_PATH}/static", StaticFiles(directory=STATIC_PATH), name="static")
 
 
 class ChatRequest(BaseModel):
@@ -45,21 +46,22 @@ def startup() -> None:
     get_vector_store()
 
 
-@app.get("/health")
+@app.get(f"{BASE_PATH}/health")
 def health() -> dict[str, str]:
     """健康检查。"""
 
     return {"status": "ok"}
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get(BASE_PATH, response_class=HTMLResponse)
+@app.get(f"{BASE_PATH}/", response_class=HTMLResponse)
 def root() -> str:
     """Return chat page."""
 
     return INDEX_HTML_PATH.read_text(encoding="utf-8")
 
 
-@app.post("/chat", response_model=ChatResponse)
+@app.post(f"{BASE_PATH}/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> dict[str, Any]:
     """处理多轮聊天。"""
 
@@ -69,7 +71,7 @@ def chat(request: ChatRequest) -> dict[str, Any]:
     return chat_agent.chat(session_id=request.session_id, user_message=message)
 
 
-@app.post("/chat/stream")
+@app.post(f"{BASE_PATH}/chat/stream")
 def chat_stream(request: ChatRequest) -> StreamingResponse:
     """流式返回聊天结果。"""
 
